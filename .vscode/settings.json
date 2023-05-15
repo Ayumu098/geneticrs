@@ -1,0 +1,13 @@
+{
+  "files.exclude": {
+    "__pycache__": true,
+    ".pytest_cache": true,
+    "model\\__pycache__": true,
+    "model\\__init__.py": true,
+    "__init__.py": true,
+    "demo\\__init__.py": true,
+    "data\\__init__.py": true,
+    ".gitignore": true,
+    ".vscode": true
+  }
+}
