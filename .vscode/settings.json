@@ -7,12 +7,19 @@
     "__init__.py": true,
     "demo\\__init__.py": true,
     "data\\__init__.py": true,
-    ".gitignore": true,
-    ".vscode": true
-},
-"python.testing.pytestArgs": [
-	"test"
-],
-"python.testing.unittestEnabled": false,
-"python.testing.pytestEnabled": true
+    ".vscode": true,
+    "LICENSE": true,
+    "data\\__pycache__": true,
+    "test\\__pycache__": true,
+    "test\\__init__.py": true,
+    "test\\model\\__pycache__": true,
+    "test\\model\\__init__.py": true,
+    "test\\data\\__pycache__": true,
+    "test\\data\\__init__.py": true
+  },
+  "python.testing.pytestArgs": [
+    "test"
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
 }
