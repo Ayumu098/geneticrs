@@ -1,5 +1,5 @@
 import torch
-from .GeneticAlgorithm import GeneticAlgorithm
+from ...model.GeneticAlgorithm import GeneticAlgorithm
 
 
 def random_int() -> int:

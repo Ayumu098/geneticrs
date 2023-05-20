@@ -1,4 +1,4 @@
-from .GeneticAlgorithm import GeneticAlgorithm, Population, EvolutionHistory
+from ...model.GeneticAlgorithm import GeneticAlgorithm, Population, EvolutionHistory
 import pytest
 
 

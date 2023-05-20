@@ -1,4 +1,4 @@
-from .GeneticAlgorithm import Population
+from ...model.GeneticAlgorithm import Population
 from random import randint
 
 

@@ -1,4 +1,4 @@
-from .Schedule import Schedule, DAYS
+from ...data.Schedule import Schedule, DAYS
 from datetime import datetime
 from random import randint, choice
 

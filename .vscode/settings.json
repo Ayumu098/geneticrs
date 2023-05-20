@@ -9,5 +9,10 @@
     "data\\__init__.py": true,
     ".gitignore": true,
     ".vscode": true
-  }
+},
+"python.testing.pytestArgs": [
+	"test"
+],
+"python.testing.unittestEnabled": false,
+"python.testing.pytestEnabled": true
 }
