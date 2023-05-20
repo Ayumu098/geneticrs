@@ -19,8 +19,6 @@ class Population:
         gene_size: int = 20,
         gene_bound: int = 1000,
         fitness_function: callable = lambda x: x.sum(dim=1),
-        mutation_probability: float = 0.1,
-        crossover_probability: float = 0.3,
         device="cpu",
     ) -> None:
         """Collection of individuals in a standard genetic algorithm.
