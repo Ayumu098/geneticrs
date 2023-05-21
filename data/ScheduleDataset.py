@@ -1,5 +1,5 @@
 from torch.utils.data import IterableDataset
-from ..data.Schedule import Schedule
+from .Schedule import Schedule
 from pandas import read_csv
 
 

@@ -139,6 +139,7 @@ class Population:
             `torch.tensor(population_size, gene_size)`:
             Selected individuals from the population
         """
+
         selection_index = self.fitness[0].float().multinomial(1)
         return self._individuals[selection_index][0]
 

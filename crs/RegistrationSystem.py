@@ -21,7 +21,6 @@ class RegistrationSystem:
         Else, `False`.
         """
         assert 0 <= probability <= 1
-
         return torch.bernoulli(torch.tensor(probability))
 
     def __init__(self, dataset) -> None:
@@ -36,7 +35,14 @@ class RegistrationSystem:
             self.schedules.append(schedules)
             self.probabilities.append(probability)
 
-    def fitness_score(self, individual: torch.tensor) -> float:
+    def __len__(self):
+        return len(self.names)
+
+    def fitness_score(
+        self,
+        individual: torch.tensor,
+        weights: torch.tensor,
+    ) -> torch.tensor:
         """
         Calculate the fitness score of a given individual
         wherein each element in the individual represents
@@ -52,6 +58,8 @@ class RegistrationSystem:
         Args:
             individual (torch.tensor): A tensor of points.
             Each point represents or index a subject.
+            weights (torch.tensor): A tensor of weights
+            for the given bases of the fitness function.
 
         Returns:
             float: Fitness score of a given individual
@@ -90,14 +98,25 @@ class RegistrationSystem:
         pair_indices = list(combinations(range(len(schedules.keys())), 2))
 
         overlaps = sum(
-            RegistrationSystem.overlap(schedule_tensor[index1], schedule_tensor[index2])
+            RegistrationSystem.overlap(
+                schedule_tensor[index1],
+                schedule_tensor[index2],
+            )
             for index1, index2 in pair_indices
         )
         overlaps = overlaps / len(pair_indices)
 
-        return probability_sum, probability_standard_deviation, overlaps
+        # Actual Fitness Function
 
-    def fitness_function(self, population: torch.tensor) -> torch.tensor:
+        return torch.tensor(
+            [probability_sum, 1 - probability_standard_deviation, 1 - overlaps]
+        ).dot(weights)
+
+    def fitness_function(
+        self,
+        population: torch.tensor,
+        weights: torch.tensor,
+    ) -> torch.tensor:
         """
         Calculate the fitness score of a given population
         wherein each element in the population represents
@@ -106,6 +125,8 @@ class RegistrationSystem:
         Args:
             population (torch.tensor): A tensor of individuals.
             Each individual represents or index a subject.
+            weights (torch.tensor): A tensor of weights
+            for the given bases of the fitness function.
 
         Returns:
             torch.tensor: Fitness score of a given population
@@ -114,7 +135,7 @@ class RegistrationSystem:
         fitness = torch.zeros((population.shape[0]))
 
         for index, individual in enumerate(population):
-            fitness[index] = self.fitness_score(individual)
+            fitness[index] = self.fitness_score(individual, weights)
 
         return fitness
 
