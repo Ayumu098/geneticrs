@@ -190,8 +190,10 @@ def test_best_fitness():
     # Initialization
 
     history = EvolutionHistory()
-    population = Population(mutation_probability=0, crossover_probability=0)
-    solver = GeneticAlgorithm(population, history)
+    population = Population()
+    solver = GeneticAlgorithm(
+        population, history, mutation_probability=0, crossover_probability=0
+    )
 
     assert history.best_fitness == history.initial_fitness
 

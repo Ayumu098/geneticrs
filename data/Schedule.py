@@ -125,19 +125,19 @@ class Schedule:
         """
 
         # Split source into multiple subschedules
-        schedules = source.split("; ")
+        schedules = source.split(";")
 
         # Extract the day and time from each schedule
         schedules = (schedule.split(" ")[:2] for schedule in schedules)
 
         # Replace every Thursday with H for convenience
-        schedules = ((days.replace("Th", "H"), time) for days, time in schedules)
+        schedules = [(days.replace("Th", "H"), time) for days, time in schedules]
 
         # Replace every Sunday with U for convenience
-        schedules = ((days.replace("Su", "U"), time) for days, time in schedules)
+        schedules = [(days.replace("Su", "U"), time) for days, time in schedules]
 
         # Split multiday schedules into seperate days
-        schedules = ((day, time) for days, time in schedules for day in days)
+        schedules = [(day, time) for days, time in schedules for day in days]
 
         # Convert schedules into military time
         return [[day, *Schedule.military(time)] for day, time in schedules]

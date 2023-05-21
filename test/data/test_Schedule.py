@@ -88,14 +88,14 @@ def test_parse():
         true_schedules = [[day, true_start, true_end] for day in days]
 
         # Use Schedule.parse to generate test schedule
-        test_schedule = f"{days} {start_time}-{end_time}"
+        test_schedule = f"{days} {start_time}-{end_time} * *"
         schedule = Schedule(test_schedule)
 
         assert schedule.sub_schedules == true_schedules
 
 
 def test_binary_initial():
-    initial_schedule = Schedule("M 12:00AM-12:05AM")
+    initial_schedule = Schedule("M 12:00AM-12:05AM * *")
     true_initial_schedule = Schedule.empty_schedule()
     true_initial_schedule[0] = 1
 
@@ -103,7 +103,7 @@ def test_binary_initial():
 
 
 def test_binary_final():
-    final_schedule = Schedule("Su 11:50PM-11:55PM")
+    final_schedule = Schedule("Su 11:50PM-11:55PM * *")
     true_final_schedule = Schedule.empty_schedule()
     true_final_schedule[-2] = 1
 

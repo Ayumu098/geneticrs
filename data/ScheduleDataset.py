@@ -1,9 +1,9 @@
 from torch.utils.data import IterableDataset
-from Schedule import Schedule
+from ..data.Schedule import Schedule
 from pandas import read_csv
 
 
-class DatasetCRS(IterableDataset):
+class ScheduleDataset(IterableDataset):
     COLUMNS = [
         "Class Name",
         "Class Type",
@@ -30,7 +30,11 @@ class DatasetCRS(IterableDataset):
         """
 
         # Read the csv file
-        frames = read_csv(csv_source, header=0, usecols=DatasetCRS.COLUMNS)
+        frames = read_csv(
+            csv_source,
+            header=0,
+            usecols=ScheduleDataset.COLUMNS,
+        )
         self._len = frames.shape[0]
 
         class_names = frames["Class Name"]
