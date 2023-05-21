@@ -2,6 +2,7 @@
 Demonstrate the general algorithm using sum as the fitness function.
 """
 
+import torch
 from tqdm import tqdm
 from argparse import ArgumentParser
 
@@ -46,7 +47,7 @@ def parse_args():
     parser.add_argument(
         "--crossover-probability",
         type=float,
-        default=0.4,
+        default=0.3,
         help="Probability of crossover.",
     )
 
@@ -73,11 +74,26 @@ def parse_args():
         help="Size of the population.",
     )
 
+    # Physical Implementations
+
     parser.add_argument(
         "--device",
         type=str,
-        default="cpu",
+        default="cuda" if torch.cuda.is_available() else "cpu",
         help="Device to use.",
+    )
+
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=1234,
+        help="Random seed.",
+    )
+
+    parser.add_argument(
+        "--plot",
+        action='store_true',
+        help="Plot the fitness history.",
     )
 
     return parser.parse_args()
@@ -86,6 +102,9 @@ def parse_args():
 def main():
     args = parse_args()
 
+    torch.random.manual_seed(args.seed)
+
+    print("----------------------")
     print("Genetic Algorithm Demo")
     print("----------------------")
 
@@ -109,11 +128,15 @@ def main():
 
     # Run the algorithm
 
+    print("----------------------")
+
     for generation in (progress := tqdm(range(args.generations))):
         solver.evolve()
         progress.set_description(
             f"Generation {generation}: {solver.history.best_fitness:.2f}"
         )
+
+    print("----------------------")
 
     # Print results
 
@@ -122,8 +145,15 @@ def main():
 
     # Compare to optimal solution
 
+    print("----------------------")
+
     optimal = args.gene_size * args.gene_bound
     print(f"Ratio to optimal: {solver.history.best_fitness/optimal}")
+
+    print("----------------------")
+
+    if args.plot:
+        solver.history.plot()
 
 
 if __name__ == "__main__":

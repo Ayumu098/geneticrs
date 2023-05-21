@@ -1,5 +1,7 @@
 from .Population import Population
+import matplotlib.pyplot as plt
 from typing import List
+import numpy
 
 
 class EvolutionHistory:
@@ -15,6 +17,8 @@ class EvolutionHistory:
 
         self._best_fitness = None
         self._best_population = None
+
+        self._population_size = 0
 
     def __len__(self):
         return len(self._crossover)
@@ -116,6 +120,84 @@ class EvolutionHistory:
             if self._best_population is None or fitness > self._best_fitness:
                 self._best_population = population.individuals.clone()
                 self._best_fitness = fitness
+
+            self._population_size = len(population.individuals)
+
+    def plot(self) -> None:
+        """Plots the crossover count, mutation count, and fitness values"""
+
+        # Create generations array
+        generations = numpy.array(list(range(len(self))))
+
+        # Plot genetic operations through generations
+
+        plt.subplot(2, 1, 1)
+        plt.title("Population Partition")
+
+        mutation = numpy.array(self._mutation)
+        crossover = numpy.array(self._crossover)
+        selection = numpy.array([self._population_size] * len(self)) - (
+            mutation + crossover
+        )
+
+        operations = numpy.vstack([mutation, crossover, selection])
+
+        plt.stackplot(
+            generations,
+            operations,
+            labels=[
+                f"Mutation ({mutation.sum()})",
+                f"Crossover ({crossover.sum()})",
+                f"Selection ({selection.sum()})",
+            ],
+        )
+
+        plt.legend()
+        plt.grid()
+        plt.ylim((0, 10))
+        plt.xlim(0, len(self) - 1)
+
+        # Plot fitness through generations
+
+        plt.subplot(2, 1, 2)
+        plt.title("Fitness Scores")
+
+        ones = numpy.ones(len(self))
+
+        mean_fitness = numpy.array(self.fitness).mean() * ones
+        initial_fitness = numpy.array(self.initial_fitness) * ones
+        best_fitness = numpy.array(self.best_fitness) * ones
+
+        plt.plot(
+            generations,
+            numpy.array(self._fitness),
+            label="Best Fitness",
+        )
+        plt.plot(
+            generations,
+            mean_fitness,
+            label=f"Mean Fitness ({round(mean_fitness[0])})",
+            linestyle="dashed",
+        )
+        plt.plot(
+            generations,
+            initial_fitness,
+            label=f"Initial Fitness ({self.initial_fitness})",
+            linestyle="dashed",
+        )
+        plt.plot(
+            generations,
+            best_fitness,
+            label=f"Best Fitness ({self.best_fitness})",
+            linestyle="dashed",
+        )
+
+        plt.legend()
+        plt.grid()
+        plt.ylim((min(self.fitness) * 0.9, max(self.fitness) * 1.1))
+        plt.xlim(0, len(self) - 1)
+
+        plt.show()
 
     @property
     def crossover(self) -> List[int]:
