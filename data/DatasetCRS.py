@@ -37,7 +37,7 @@ class DatasetCRS(IterableDataset):
         class_types = frames["Class Type"]
 
         probabilities = (
-            available / demand
+            1.0 if available >= demand else available / demand
             for available, demand in zip(frames["Available"], frames["Demand"])
         )
 
