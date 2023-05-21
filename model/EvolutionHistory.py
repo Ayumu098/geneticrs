@@ -71,6 +71,14 @@ class EvolutionHistory:
         """
         return self._best_population
 
+    @property
+    def running_best_fitness(self):
+        """Returns the best fitness with respect to the past generations
+            of the current index.
+        """
+
+        return [max(self.fitness[:index]) for index in range(1, len(self)+1)]
+
     def freeze(self) -> None:
         """Freeze history to prevent appending of values."""
         self._enabled = False
@@ -164,14 +172,21 @@ class EvolutionHistory:
 
         ones = numpy.ones(len(self))
 
+        fitness = numpy.array(self._fitness)
         mean_fitness = numpy.array(self.fitness).mean() * ones
         initial_fitness = numpy.array(self.initial_fitness) * ones
-        best_fitness = numpy.array(self.best_fitness) * ones
+        running_best_fitness = numpy.array(self.running_best_fitness)
 
         plt.plot(
             generations,
-            numpy.array(self._fitness),
+            fitness,
             label="Best Fitness",
+        )
+        plt.plot(
+            generations,
+            running_best_fitness,
+            label=f"Running Fitness ({self.best_fitness})",
+            linestyle="dashed",
         )
         plt.plot(
             generations,
@@ -185,12 +200,10 @@ class EvolutionHistory:
             label=f"Initial Fitness ({self.initial_fitness})",
             linestyle="dashed",
         )
-        plt.plot(
-            generations,
-            best_fitness,
-            label=f"Best Fitness ({self.best_fitness})",
-            linestyle="dashed",
-        )
+
+        max_fitness, max_generation = fitness.max(), fitness.argmax()
+        plt.plot(max_generation, max_fitness, 'r*')
+        plt.text(max_generation, max_fitness, f"(Generation {max_generation})")
 
         plt.legend()
         plt.grid()
