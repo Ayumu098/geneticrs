@@ -107,7 +107,7 @@ class GeneticAlgorithm:
             1: Crossover
             2: Mutation
         Returns:
-            `tuple[int]`: Genetic perations to perform on the population
+            `torch.tensor`: Genetic operations to perform on the population
         """
         mutation_probability = self.mutation_probability
         crossover_probability = self.crossover_probability
@@ -136,7 +136,7 @@ class GeneticAlgorithm:
 
         for _ in range(generations):
             # Generate random partition of operations
-
+            
             operation_partition = self.operation_partition().sort()[0]
             operation_map = [
                 self.population.selection,
@@ -144,7 +144,7 @@ class GeneticAlgorithm:
                 self.population.mutation_produce,
             ]
 
-            new_population = self.population.individuals
+            new_population = []
 
             # Genereate new population
             for index, operation in enumerate(operation_partition):
