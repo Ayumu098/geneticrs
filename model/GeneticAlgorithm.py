@@ -9,7 +9,7 @@ class GeneticAlgorithm:
         population: Population = Population(),
         history: EvolutionHistory = EvolutionHistory(),
         mutation_probability: float = 0.1,
-        crossover_probability: float = 0.1,
+        crossover_probability: float = 0.3,
     ) -> None:
         """Class wrapper for Genetic Algorithm
 
