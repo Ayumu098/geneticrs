@@ -49,11 +49,11 @@ class GeneticAlgorithm:
     def __iter__(self):
         return iter(self.population)
 
-    def __getitem__(self, index: int):
+    def __getitem__(self, index: int) -> torch.tensor:
         return self.population[index]
 
     @property
-    def population(self):
+    def population(self) -> Population:
         """
         Returns:
             `Population`:
@@ -62,7 +62,7 @@ class GeneticAlgorithm:
         return self._population
 
     @property
-    def history(self):
+    def history(self) -> EvolutionHistory:
         """
         Returns:
             `EvolutionHistory`:
@@ -71,7 +71,7 @@ class GeneticAlgorithm:
         return self._history
 
     @property
-    def mutation_probability(self):
+    def mutation_probability(self) -> float:
         """
         Returns:
             `float`:
@@ -81,7 +81,7 @@ class GeneticAlgorithm:
         return self._mutation_probability
 
     @property
-    def crossover_probability(self):
+    def crossover_probability(self) -> float:
         """
         Returns:
             `float`:
@@ -91,7 +91,7 @@ class GeneticAlgorithm:
         return self._crossover_probability
 
     @property
-    def selection_probability(self):
+    def selection_probability(self) -> float:
         """
         Returns:
             `float`:
@@ -100,7 +100,7 @@ class GeneticAlgorithm:
 
         return self._selection_probability
 
-    def operation_partition(self) -> tuple[int]:
+    def operation_partition(self) -> torch.tensor:
         """Creates a random partitions with values [0, 1, 2] that represent
         the genetic operations to perform on the population.
             0: Selection
@@ -136,7 +136,7 @@ class GeneticAlgorithm:
 
         for _ in range(generations):
             # Generate random partition of operations
-            
+
             operation_partition = self.operation_partition().sort()[0]
             operation_map = [
                 self.population.selection,
