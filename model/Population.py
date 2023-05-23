@@ -122,7 +122,6 @@ class Population:
         """
         return self._fitness_function(self._individuals).sort(descending=True)
 
-    @property
     def best_individuals(self, sample: int = 1) -> torch.tensor:
         """Returns the best individual(s) in the population
         based on their fitness scores.
@@ -135,7 +134,6 @@ class Population:
         """
         return self._individuals[self.fitness[1][:sample]]
 
-    @property
     def worst_individuals(self, sample: int = 1) -> torch.tensor:
         """Returns the worst individual(s) in the population
         based on their fitness scores.
@@ -153,8 +151,7 @@ class Population:
         self._individuals = self._individuals[self.fitness[1]]
 
     def drop(self, keep: int = 1) -> None:
-        """Drops the worst individual(s) in the population
-        based on their fitness scores.
+        """Drops individuals at the end of the population.
 
         Args:
             keep (`int`, optional): Number of individuals to keep
@@ -164,7 +161,7 @@ class Population:
         self._individuals = self._individuals[:keep]
 
     def append(self, individuals: torch.tensor) -> None:
-        """Appends individuals to the population
+        """Appends individuals to the end of population
 
         Args:
             individuals (`torch.tensor`):
