@@ -53,7 +53,6 @@ class Population:
         self._size = size
         self._gene_size = gene_size
         self._gene_bound = gene_bound
-        self._shape = (size, gene_size)
 
         # Fitness Function
         self._fitness_function = fitness_function
@@ -102,7 +101,7 @@ class Population:
             `int`: `population_size`,
             `int`: `gene_size`
         """
-        return self._shape
+        return (self._size, self._gene_size)
 
     @property
     def size(self) -> tuple[int]:
@@ -122,6 +121,59 @@ class Population:
             `torch.tensor(population size)`: Sorted indices from population
         """
         return self._fitness_function(self._individuals).sort(descending=True)
+
+    @property
+    def best_individuals(self, sample: int = 1) -> torch.tensor:
+        """Returns the best individual(s) in the population
+        based on their fitness scores.
+
+        Args:
+            sample (`int`, optional): Number of individuals to return
+            Defaults to 1.
+        Returns:
+            `torch.tensor`: Individual(s) with the highest fitness score(s)
+        """
+        return self._individuals[self.fitness[1][:sample]]
+
+    @property
+    def worst_individuals(self, sample: int = 1) -> torch.tensor:
+        """Returns the worst individual(s) in the population
+        based on their fitness scores.
+
+        Args:
+            sample (`int`, optional): Number of individuals to return
+            Defaults to 1.
+        Returns:
+            `torch.tensor`: Individual(s) with the lowest fitness score(s)
+        """
+        return self._individuals[self.fitness[1][-sample:]]
+
+    def sort(self) -> None:
+        """Sorts the population by fitness scores."""
+        self._individuals = self._individuals[self.fitness[1]]
+
+    def drop(self, keep: int = 1) -> None:
+        """Drops the worst individual(s) in the population
+        based on their fitness scores.
+
+        Args:
+            keep (`int`, optional): Number of individuals to keep
+            Defaults to 1.
+        """
+        self._size = keep
+        self._individuals = self._individuals[:keep]
+
+    def append(self, individuals: torch.tensor) -> None:
+        """Appends individuals to the population
+
+        Args:
+            individuals (`torch.tensor`):
+            Individuals to append to the population
+        """
+        assert individuals.shape[1] == self.gene_size
+
+        self._size += individuals.shape[0]
+        self._individuals = torch.cat((self._individuals, individuals))
 
     @property
     def individuals(self):

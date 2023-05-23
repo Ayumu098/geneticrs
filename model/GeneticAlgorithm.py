@@ -44,6 +44,7 @@ class GeneticAlgorithm:
         nonselection_probability = mutation_probability + crossover_probability
         self._selection_probability = 1 - nonselection_probability
 
+        self.population.sort()
         self.history.update(self.population, crossover=0, mutation=0)
 
     def __iter__(self):
@@ -109,23 +110,18 @@ class GeneticAlgorithm:
         Returns:
             `torch.tensor`: Genetic operations to perform on the population
         """
-        mutation_probability = self.mutation_probability
-        crossover_probability = self.crossover_probability
-        selection_probability = self.selection_probability
 
         operation_probability = torch.tensor(
             [
-                selection_probability,
-                mutation_probability,
-                crossover_probability,
+                self.selection_probability,
+                self.crossover_probability,
+                self.mutation_probability,
             ]
         )
 
-        operation_partition = operation_probability.float().multinomial(
+        return operation_probability.float().multinomial(
             self.population.size, replacement=True
         )
-
-        return operation_partition
 
     def evolve(self, generations: int = 1) -> None:
         """Applies crossover, mutation and fitness function to population.
@@ -135,30 +131,32 @@ class GeneticAlgorithm:
         """
 
         for _ in range(generations):
-            # Generate random partition of operations
 
+            # Generate random partition of operations
             operation_partition = self.operation_partition().sort()[0]
-            operation_map = [
-                self.population.selection,
-                self.population.crossover_produce,
-                self.population.mutation_produce,
+
+            # Operation counts
+            selection_count = (operation_partition == 0).sum()
+            crossover_count = (operation_partition == 1).sum()
+            mutation_count = (operation_partition == 2).sum()
+
+            # Selection process by dropping weakest individuals]
+            self.population.sort()
+            self.population.drop(keep=selection_count)
+
+            # Crossover and Mutation process
+            new_individuals = [
+                self.population.crossover_produce() if operation == 1 else
+                self.population.mutation_produce()
+                for operation in operation_partition[selection_count:]
             ]
 
-            new_population = []
+            if new_individuals:
+                self.population.append(torch.stack(new_individuals))
 
-            # Genereate new population
-            for index, operation in enumerate(operation_partition):
-                genetic_operation = operation_map[operation]
-                new_population[index] = genetic_operation()
-
-            # Overwrite old population
-            for index, new_individual in enumerate(new_population):
-                self.population[index] = new_individual
+            self.population.sort()
 
             # Update history
-            mutation_count = (operation_partition == 1).sum()
-            crossover_count = (operation_partition == 2).sum()
-
             self.history.update(
                 population=self.population,
                 crossover=crossover_count,
