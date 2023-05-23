@@ -100,17 +100,20 @@ def parse_args():
         help="Plot the fitness history.",
     )
 
+    parser.add_argument(
+        "--no-seed",
+        action="store_true",
+        help="Don't use a seed if enabled.",
+    )
+
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
 
-    torch.random.manual_seed(args.seed)
-
-    print("-----------------------------------------")
-    print("Genetic Algorithm Scheduling for UPD CRS")
-    print("-----------------------------------------")
+    if not args.no_seed:
+        torch.random.manual_seed(args.seed)
 
     # Load dataset
     dataset = ScheduleDataset("input.csv")
@@ -138,43 +141,104 @@ def main():
         crossover_probability=args.crossover_probability,
     )
 
-    print(f"Initial fitness: {solver.history.best_fitness:.2f}")
-    print(f"Initial population:\n{solver.history.best_population.numpy()}")
+    print("-------------------------------------------")
+    print("Genetic Algorithm Scheduling for UPD CRS")
+    print("-------------------------------------------")
+
+    # Print algorithm arguments
+    print("Settings")
+
+    print("-------------------------------------------")
+    print(f"Seed:            {args.seed}")
+    print(f"Generations:     {args.generations}")
+    print("-------------------------------------------")
+
+    print(f"Mutation Rate:   {args.mutation_probability}")
+    print(f"Crossover Rate:  {args.crossover_probability}")
+    print("-------------------------------------------")
+
+    print(f"Gene bound:      {len(dataset) - 1}")
+    print(f"Gene size:       {args.gene_size}")
+    print(f"Population size: {args.population_size}")
+    print("-------------------------------------------")
+
+    # Initial Population
+
+    print("Initial Population")
+    print("-------------------------------------------")
+    print(f"Best Fitness: {solver.history.best_fitness:.2f}")
+    print(f"Population:\n{solver.history.best_population.numpy()}")
+
+    # Assess using Registration System
+
+    print("-------------------------------------------")
+    print("Assessing the initial population in the CRS")
+    print("-------------------------------------------")
+
+    assessment_length = 1000
+    enlistment_counts = []
+
+    for index, individual in enumerate(solver.history.best_population):
+        enlistment_count = torch.zeros(assessment_length)
+
+        for assessment in (progress := tqdm(range(assessment_length))):
+            enlistments = len(system(individual))
+            enlistment_count[assessment] = enlistments
+            progress.set_description(f"Enlistment {index}: {enlistments}")
+        enlistment_counts.append(enlistment_count)
+    print("-------------------------------------------")
+
+    for enlistment_count in enlistment_counts:
+        print(f"Individual {index} Mean Enlisted Subject:\
+            {enlistment_count.mean():.5f}")
+
+    print("-------------------------------------------")
 
     # Run the algorithm
 
-    print("-----------------------------------------")
+    print("-------------------------------------------")
+    print("Running Algorithm")
+    print("-------------------------------------------")
 
-    for generation in (progress := tqdm(range(args.generations))):
+    for _ in (progress := tqdm(range(args.generations))):
         solver.evolve()
         progress.set_description(
-            f"Generation {generation}: {solver.history.best_fitness:.2f}"
+            f"Best Fitness: {solver.history.best_fitness:.2f}",
         )
 
-    print("-----------------------------------------")
+    print("-------------------------------------------")
+    print("Best Population")
+    print("-------------------------------------------")
 
     # Print results
 
     print(f"Best fitness: {solver.history.best_fitness:.2f}")
-    print(f"Best population:\n{solver.history.best_population.numpy()}")
+    print(f"Population:\n{solver.history.best_population.numpy()}")
 
-    # Assess using RegistrationSystem
+    # Assess using Registration System
 
-    print("-----------------------------------------")
+    print("-------------------------------------------")
     print("Assessing the best individual in the CRS")
+    print("-------------------------------------------")
 
     assessment_length = 1000
-    enlistment_count = torch.zeros(assessment_length)
-    best_individual = solver.history.best_population[0]
+    enlistment_counts = []
 
-    for assessment in tqdm(range(assessment_length)):
-        enlistment_count[assessment] = len(system(best_individual))
+    for index, individual in enumerate(solver.history.best_population):
+        enlistment_count = torch.zeros(assessment_length)
 
-    print("-----------------------------------------")
+        for assessment in (progress := tqdm(range(assessment_length))):
+            enlistments = len(system(individual))
+            enlistment_count[assessment] = enlistments
+            progress.set_description(f"Enlistment {index}: {enlistments}")
+        enlistment_counts.append(enlistment_count)
+    print("-------------------------------------------")
 
-    print(f"Average enlistment count: {enlistment_count.mean()}")
+    for enlistment_count in enlistment_counts:
+        print(f"Individual {index} Mean Enlisted Subject:\
+            {enlistment_count.mean():.5f}")
 
-    print("-----------------------------------------")
+    print("-------------------------------------------")
 
     if args.plot:
         solver.history.plot()

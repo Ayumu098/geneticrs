@@ -45,7 +45,8 @@ def fitness_function(
 
 
 def decode(
-    population: torch.tensor, fitness_map: torch.tensor
+    population: torch.tensor,
+    fitness_map: torch.tensor,
 ) -> torch.tensor:
     """Convert indices to values."""
 
@@ -148,6 +149,23 @@ def main():
     print("Genetic Algorithm Demo")
     print("----------------------")
 
+    # Print algorithm arguments
+    print("Settings")
+
+    print("----------------------")
+    print(f"Seed:            {args.seed}")
+    print(f"Generations:     {args.generations}")
+    print("----------------------")
+
+    print(f"Mutation Rate:   {args.mutation_probability}")
+    print(f"Crossover Rate:  {args.crossover_probability}")
+    print("----------------------")
+
+    print(f"Gene bound:      {args.gene_bound}")
+    print(f"Gene size:       {args.gene_size}")
+    print(f"Population size: {args.population_size}")
+    print("----------------------")
+
     # Generates a random map
     fitness_map = generate_fitness_map(gene_bound=args.gene_bound)
 
@@ -167,35 +185,45 @@ def main():
         crossover_probability=args.crossover_probability,
     )
 
-    print(f"Initial fitness: {solver.history.best_fitness:.2f}")
-    print(f"Initial population:\n{solver.history.best_population}")
+    print("Initial Population")
+    print("----------------------")
+    print(f"Best Fitness: {solver.history.best_fitness:.2f}")
+    print(f"Population:\n{solver.history.best_population.numpy()}")
 
     # Run the algorithm
 
     print("----------------------")
+    print("Running Algorithm")
+    print("----------------------")
 
-    for generation in (progress := tqdm(range(args.generations))):
+    for _ in (progress := tqdm(range(args.generations))):
         solver.evolve()
         progress.set_description(
-            f"Generation {generation}: {solver.history.best_fitness:.2f}"
+            f"Best Fitness: {solver.history.best_fitness:.2f}",
         )
 
     print("----------------------")
-
-    # Print results
+    print("Best Population")
+    print("----------------------")
 
     decoded_population = decode(solver.history.best_population, fitness_map)
 
+    # Print results
+
     print(f"Best fitness: {solver.history.best_fitness:.2f}")
-    print(f"Best population:\n{solver.history.best_population}")
-    print(f"Best population (decoded):\n{decoded_population}")
+    print(f"Population:\n{solver.history.best_population.numpy()}")
+    print(f"Population (decoded):\n{decoded_population.numpy()}")
 
     # Compare to optimal solution
 
     print("----------------------")
+    print("Evaluation")
+    print("----------------------")
 
     optimal = args.gene_size * args.gene_bound
-    print(f"Ratio to optimal: {solver.history.best_fitness/optimal}")
+    print(f"Optimal solution:   {optimal}")
+    print(f"Generated solution: {int(solver.history.best_fitness)}")
+    print(f"Ratio to optimal:   {solver.history.best_fitness/optimal}")
 
     print("----------------------")
 
