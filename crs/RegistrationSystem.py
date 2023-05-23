@@ -65,6 +65,9 @@ class RegistrationSystem:
             float: Fitness score of a given individual
         """
 
+        # Remove redundant subjects
+        individual = torch.unique(individual)
+
         # Organize gene points by their corresponding class type
         probabilities = defaultdict(lambda: torch.tensor(0.0))
         schedules = defaultdict(lambda: torch.zeros_like(self.schedules[0]))
@@ -166,11 +169,11 @@ class RegistrationSystem:
             if self.enlist(self.probabilities[gene]):
                 enlisted_subjects.append(gene)
 
-            # Set genes to be removed if they overlap
-            for check in individual:
-                if RegistrationSystem.overlap(
-                    self.schedules[gene], self.schedules[check]
-                ):
-                    removed_subjects.append(check)
+                # Set genes to be removed if they overlap
+                for check in individual:
+                    if RegistrationSystem.overlap(
+                        self.schedules[gene], self.schedules[check]
+                    ):
+                        removed_subjects.append(check)
 
         return torch.tensor(enlisted_subjects)

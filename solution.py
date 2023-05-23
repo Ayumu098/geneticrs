@@ -139,7 +139,7 @@ def main():
     )
 
     print(f"Initial fitness: {solver.history.best_fitness:.2f}")
-    print(f"Initial population:\n{solver.history.best_population}")
+    print(f"Initial population:\n{solver.history.best_population.numpy()}")
 
     # Run the algorithm
 
@@ -156,7 +156,7 @@ def main():
     # Print results
 
     print(f"Best fitness: {solver.history.best_fitness:.2f}")
-    print(f"Best population:\n{solver.history.best_population}")
+    print(f"Best population:\n{solver.history.best_population.numpy()}")
 
     # Assess using RegistrationSystem
 
