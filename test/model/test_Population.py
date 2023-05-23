@@ -33,7 +33,9 @@ def test_population_shape() -> None:
 
 
 def test_selection() -> None:
-    """Test if selection produces a tensor of the same size as the gene size."""
+    """
+    Test if selection produces a tensor of the same size as the gene size.
+    """
     parameters = [random_parameters() for _ in range(randint(1, 100))]
 
     gene_bound = 1000
@@ -63,7 +65,8 @@ def test_mutation() -> None:
 
 
 def test_crossover() -> None:
-    """Test if crossover produces a tensor of the same size as the gene size."""
+    """Test if crossover produces a tensor of the same size as the gene size.'
+    """
     parameters = [random_parameters() for _ in range(randint(1, 100))]
 
     gene_bound = 1000
