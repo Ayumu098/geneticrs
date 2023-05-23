@@ -26,7 +26,8 @@ def random_probabilities() -> tuple[float, float]:
     """
 
     mutation_probability = torch.rand(1).item() % 1
-    crossover_probability = (torch.rand(1).item() % 1) % (1 - mutation_probability)
+    crossover_probability = (torch.rand(1).item() % 1)
+    crossover_probability %= (1 - mutation_probability)
     return mutation_probability, crossover_probability
 
 

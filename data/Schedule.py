@@ -131,10 +131,12 @@ class Schedule:
         schedules = (schedule.split(" ")[:2] for schedule in schedules)
 
         # Replace every Thursday with H for convenience
-        schedules = [(days.replace("Th", "H"), time) for days, time in schedules]
+        schedules = [(days.replace("Th", "H"), time)
+                     for days, time in schedules]
 
         # Replace every Sunday with U for convenience
-        schedules = [(days.replace("Su", "U"), time) for days, time in schedules]
+        schedules = [(days.replace("Su", "U"), time) for
+                     days, time in schedules]
 
         # Split multiday schedules into seperate days
         schedules = [(day, time) for days, time in schedules for day in days]
