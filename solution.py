@@ -147,19 +147,20 @@ def main():
 
     # Print algorithm arguments
     print("Settings")
-
     print("-------------------------------------------")
     print(f"Seed:            {args.seed}")
     print(f"Generations:     {args.generations}")
     print("-------------------------------------------")
-
     print(f"Mutation Rate:   {args.mutation_probability}")
     print(f"Crossover Rate:  {args.crossover_probability}")
     print("-------------------------------------------")
-
     print(f"Gene bound:      {len(dataset) - 1}")
     print(f"Gene size:       {args.gene_size}")
     print(f"Population size: {args.population_size}")
+    print("-------------------------------------------")
+    print(f"Weight - Probability:         {len(dataset) - 1}")
+    print(f"Weight - Probability Balance: {args.gene_size}")
+    print(f"Weight - Schedule Overlap:    {args.population_size}")
     print("-------------------------------------------")
 
     # Initial Population
@@ -168,14 +169,14 @@ def main():
     print("-------------------------------------------")
     print(f"Best Fitness: {solver.history.best_fitness:.2f}")
     print(f"Population:\n{solver.history.best_population.numpy()}")
+    print("-------------------------------------------")
 
     # Assess using Registration System
 
-    print("-------------------------------------------")
     print("Assessing the initial population in the CRS")
     print("-------------------------------------------")
 
-    assessment_length = 1000
+    assessment_length = 1
     enlistment_counts = []
 
     for index, individual in enumerate(solver.history.best_population):
@@ -186,17 +187,16 @@ def main():
             enlistment_count[assessment] = enlistments
             progress.set_description(f"Enlistment {index}: {enlistments}")
         enlistment_counts.append(enlistment_count)
+
     print("-------------------------------------------")
 
     for enlistment_count in enlistment_counts:
-        print(f"Individual {index} Mean Enlisted Subject:\
-            {enlistment_count.mean():.5f}")
-
-    print("-------------------------------------------")
+        print(
+            f"Individual {index} Average # Enlisted Subjects:\
+            {enlistment_count.mean():.5f}"
+        )
 
     # Run the algorithm
-
-    print("-------------------------------------------")
     print("Running Algorithm")
     print("-------------------------------------------")
 
@@ -205,12 +205,12 @@ def main():
         progress.set_description(
             f"Best Fitness: {solver.history.best_fitness:.2f}",
         )
-
-    print("-------------------------------------------")
-    print("Best Population")
     print("-------------------------------------------")
 
     # Print results
+
+    print("Best Population")
+    print("-------------------------------------------")
 
     print(f"Best fitness: {solver.history.best_fitness:.2f}")
     print(f"Population:\n{solver.history.best_population.numpy()}")
@@ -221,7 +221,7 @@ def main():
     print("Assessing the best individual in the CRS")
     print("-------------------------------------------")
 
-    assessment_length = 1000
+    assessment_length = 1
     enlistment_counts = []
 
     for index, individual in enumerate(solver.history.best_population):
@@ -232,11 +232,26 @@ def main():
             enlistment_count[assessment] = enlistments
             progress.set_description(f"Enlistment {index}: {enlistments}")
         enlistment_counts.append(enlistment_count)
+
     print("-------------------------------------------")
 
-    for enlistment_count in enlistment_counts:
-        print(f"Individual {index} Mean Enlisted Subject:\
-            {enlistment_count.mean():.5f}")
+    for index, enlistment_count in enumerate(enlistment_counts):
+        print(
+            f"Individual {index} Mean Enlisted Subject:\
+            {enlistment_count.mean():.5f}"
+        )
+
+    print("-------------------------------------------")
+
+    print("Suggested subjects to be enlisted:")
+
+    for index1, enlistment in enumerate(solver.history.best_population):
+        print("-------------------------------------------")
+        print(f"Enlistment Option {index1}")
+        print("-------------------------------------------")
+
+        for index2, subject in enumerate(torch.unique(enlistment).sort()[0]):
+            print(f"Subject {index2}: {system.names[subject]}")
 
     print("-------------------------------------------")
 
