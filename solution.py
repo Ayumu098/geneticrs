@@ -108,7 +108,7 @@ def parse_args():
 
     parser.add_argument(
         "--stable",
-        action="store_true",
+        action="store_false",
         help="Will use elitism to ensure fitness doesn't decrease over time.",
     )
 
