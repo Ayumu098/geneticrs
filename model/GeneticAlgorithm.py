@@ -10,6 +10,7 @@ class GeneticAlgorithm:
         history: EvolutionHistory = EvolutionHistory(),
         mutation_probability: float = 0.1,
         crossover_probability: float = 0.3,
+        stable: bool = True,
     ) -> None:
         """Class wrapper for Genetic Algorithm
 
@@ -27,6 +28,12 @@ class GeneticAlgorithm:
             crossover_probability (`float`, optional):
             Probability of crossover in evolution.
             Defaults to 0.3.
+
+            stable (`bool`, optional):
+            If True, the population will force the selection of at least 2
+            individuals to ensure fitness score increases. If False, the
+            fitness score may decrease as the algorithm becomes random.
+            Defaults to True.
         """
 
         self._population = population
@@ -43,6 +50,8 @@ class GeneticAlgorithm:
 
         nonselection_probability = mutation_probability + crossover_probability
         self._selection_probability = 1 - nonselection_probability
+
+        self._stable = stable
 
         self.population.sort()
         self.history.update(self.population, crossover=0, mutation=0)
@@ -131,7 +140,6 @@ class GeneticAlgorithm:
         """
 
         for _ in range(generations):
-
             # Generate random partition of operations
             operation_partition = self.operation_partition().sort()[0]
 
@@ -141,13 +149,22 @@ class GeneticAlgorithm:
             mutation_count = (operation_partition == 2).sum()
 
             # Selection process by dropping weakest individuals]
+
             self.population.sort()
-            self.population.drop(keep=selection_count)
+
+            if self._stable:
+                # Ensure at least 2 individuals are selected
+                # to allow for crossover and mutation
+                selection_count = max(selection_count, 2)
+                self.population.drop(keep=selection_count)
+            else:
+                self.population.drop(keep=selection_count)
 
             # Crossover and Mutation process
             new_individuals = [
-                self.population.crossover_produce() if operation == 1 else
-                self.population.mutation_produce()
+                self.population.crossover_produce()
+                if operation == 1
+                else self.population.mutation_produce()
                 for operation in operation_partition[selection_count:]
             ]
 

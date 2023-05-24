@@ -106,6 +106,12 @@ def parse_args():
         help="Don't use a seed if enabled.",
     )
 
+    parser.add_argument(
+        "--stable",
+        action="store_true",
+        help="Will use elitism to ensure fitness doesn't decrease over time.",
+    )
+
     return parser.parse_args()
 
 
@@ -139,6 +145,7 @@ def main():
         population=population,
         mutation_probability=args.mutation_probability,
         crossover_probability=args.crossover_probability,
+        stable=args.stable,
     )
 
     print("-------------------------------------------")
@@ -148,6 +155,7 @@ def main():
     # Print algorithm arguments
     print("Settings")
     print("-------------------------------------------")
+    print(f"Stable:          {args.stable}")
     print(f"Seed:            {args.seed}")
     print(f"Generations:     {args.generations}")
     print("-------------------------------------------")
@@ -176,7 +184,7 @@ def main():
     print("Assessing the initial population in the CRS")
     print("-------------------------------------------")
 
-    assessment_length = 1
+    assessment_length = 1000
     enlistment_counts = []
 
     for index, individual in enumerate(solver.history.best_population):
@@ -221,7 +229,7 @@ def main():
     print("Assessing the best individual in the CRS")
     print("-------------------------------------------")
 
-    assessment_length = 1
+    assessment_length = 1000
     enlistment_counts = []
 
     for index, individual in enumerate(solver.history.best_population):
