@@ -232,7 +232,7 @@ def main():
     # Assess using Registration System
 
     print("-------------------------------------------")
-    print("Assessing the best individual in the CRS")
+    print("Assessing the best population in the CRS")
     print("-------------------------------------------")
 
     assessment_length = 1000
