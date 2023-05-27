@@ -4,7 +4,7 @@ import pandas as pd
 def create_csv(subs, out="out.csv"):
     subjects = [x+" " for x in subs]
 
-    raw_df = pd.read_csv('dataset\crs_ay2223s2.csv')
+    raw_df = pd.read_csv('crs_ay2223s2.csv')
     df = raw_df[raw_df['Class Name'].str.contains("|".join(subjects))]
 
     # change class type
