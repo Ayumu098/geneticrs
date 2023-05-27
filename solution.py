@@ -115,7 +115,7 @@ def parse_args():
     parser.add_argument(
         "--input-file",
         type=str,
-        default="input.csv",
+        default="input/input.csv",
     )
 
     return parser.parse_args()
