@@ -112,6 +112,12 @@ def parse_args():
         help="Will use elitism to ensure fitness doesn't decrease over time.",
     )
 
+    parser.add_argument(
+        "--input-file",
+        type=str,
+        default="input.csv",
+    )
+
     return parser.parse_args()
 
 
@@ -122,7 +128,7 @@ def main():
         torch.random.manual_seed(args.seed)
 
     # Load dataset
-    dataset = ScheduleDataset("input.csv")
+    dataset = ScheduleDataset(args.input_file)
 
     # Initialize RegistrationSystem
     system = RegistrationSystem(dataset)
