@@ -112,6 +112,12 @@ def parse_args():
         help="Will use elitism to ensure fitness doesn't decrease over time.",
     )
 
+    parser.add_argument(
+        "--input-file",
+        type=str,
+        default="input.csv",
+    )
+
     return parser.parse_args()
 
 
@@ -122,7 +128,7 @@ def main():
         torch.random.manual_seed(args.seed)
 
     # Load dataset
-    dataset = ScheduleDataset("input.csv")
+    dataset = ScheduleDataset(args.input_file)
 
     # Initialize RegistrationSystem
     system = RegistrationSystem(dataset)
@@ -156,7 +162,7 @@ def main():
     print("Settings")
     print("-------------------------------------------")
     print(f"Stable:          {args.stable}")
-    print(f"Seed:            {args.seed}")
+    print(f"Seed:            {args.seed if not args.no_seed else torch.seed()}")
     print(f"Generations:     {args.generations}")
     print("-------------------------------------------")
     print(f"Mutation Rate:   {args.mutation_probability}")
@@ -226,7 +232,7 @@ def main():
     # Assess using Registration System
 
     print("-------------------------------------------")
-    print("Assessing the best individual in the CRS")
+    print("Assessing the best population in the CRS")
     print("-------------------------------------------")
 
     assessment_length = 1000
