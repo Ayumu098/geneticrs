@@ -162,7 +162,7 @@ def main():
     print("Settings")
     print("-------------------------------------------")
     print(f"Stable:          {args.stable}")
-    print(f"Seed:            {args.seed}")
+    print(f"Seed:            {args.seed if not args.no_seed else torch.seed()}")
     print(f"Generations:     {args.generations}")
     print("-------------------------------------------")
     print(f"Mutation Rate:   {args.mutation_probability}")
