@@ -90,7 +90,7 @@ class RegistrationSystem:
         # A higher standard deviation means that some probabilities
         # are more prioritized than others. This is may be a problem
         # if it overprioritizes a subject that has a very low probability
-        probability_standard_deviation = probability_values.std()
+        probability_standard_deviation = probability_values.std(unbiased=False)
         probability_standard_deviation /= individual.shape[0]
 
         # Counts the schedules that overlap with other schedules
@@ -107,7 +107,7 @@ class RegistrationSystem:
             )
             for index1, index2 in pair_indices
         )
-        overlaps = overlaps / len(pair_indices)
+        overlaps = overlaps / max(len(pair_indices), 1)
 
         # Actual Fitness Function
 
