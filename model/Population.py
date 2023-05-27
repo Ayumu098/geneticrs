@@ -34,7 +34,7 @@ class Population:
 
             gene_bound (`int`, optional):
             Highest integer value for a characteristic.
-            Defaults to 10_000.
+            Defaults to 1_000.
 
             fitness_function (`callable`, optional):
             Function that returns tensor[population] of fitness scores.
