@@ -172,9 +172,9 @@ def main():
     print(f"Gene size:       {args.gene_size}")
     print(f"Population size: {args.population_size}")
     print("-------------------------------------------")
-    print(f"Weight - Probability:         {len(dataset) - 1}")
-    print(f"Weight - Probability Balance: {args.gene_size}")
-    print(f"Weight - Schedule Overlap:    {args.population_size}")
+    print(f"Weight - Probability:         {args.weight_probability}")
+    print(f"Weight - Probability Balance: {args.weight_balance}")
+    print(f"Weight - Schedule Overlap:    {args.weight_overlap}")
     print("-------------------------------------------")
 
     # Initial Population
@@ -204,7 +204,7 @@ def main():
 
     print("-------------------------------------------")
 
-    for enlistment_count in enlistment_counts:
+    for index, enlistment_count in enumerate(enlistment_counts):
         print(
             f"Individual {index} Average # Enlisted Subjects:\
             {enlistment_count.mean():.5f}"
