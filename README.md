@@ -114,6 +114,13 @@ Shows the fitness over generations and the partition of selectoin, crossover, an
 python solution.py --plot
 ```
 
+`--early-stop`
+When enabled, will end the algorithm if the maximum fitness score is reached.
+
+```console
+python solution.py --early-stop
+```
+
 ### Algorithm Settings
 
 `--generations`

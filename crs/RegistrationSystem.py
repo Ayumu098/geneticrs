@@ -35,6 +35,8 @@ class RegistrationSystem:
             self.schedules.append(schedules)
             self.probabilities.append(probability)
 
+        self.types_unique = list(set(self.types))
+
     def __len__(self):
         return len(self.names)
 
@@ -88,10 +90,15 @@ class RegistrationSystem:
 
         # Measures the balancing of the probabilities
         # A higher standard deviation means that some probabilities
-        # are more prioritized than others. This is may be a problem
-        # if it overprioritizes a subject that has a very low probability
+        # are more prioritized than others. While this leads to a higher
+        # probability_sum, it also means that the other probabilities
+        # are less likely to be enlisted.
+        padding = max(len(self.types_unique) - len(probability_values), 0)
+        probabilities = torch.cat([probability_values, torch.zeros(padding)])
+
         probability_standard_deviation = probability_values.std(unbiased=False)
-        probability_standard_deviation /= individual.shape[0]
+        probability_standard_deviation *= 2
+        probability_standard_deviation /= len(probabilities)
 
         # Counts the schedules that overlap with other schedules
         # except itself. Similar subject types are already added together
