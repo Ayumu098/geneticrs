@@ -107,15 +107,15 @@ def parse_args():
     )
 
     parser.add_argument(
-        "--stable",
-        action="store_false",
-        help="Will use elitism to ensure fitness doesn't decrease over time.",
-    )
-
-    parser.add_argument(
         "--input-file",
         type=str,
         default="input/input.csv",
+    )
+
+    parser.add_argument(
+        "--early-stop",
+        action="store_true",
+        help="Stop the algorithm early if the fitness reaches maximum.",
     )
 
     return parser.parse_args()
@@ -139,6 +139,8 @@ def main():
         [args.weight_probability, args.weight_balance, args.weight_overlap]
     )
 
+    maximum_fitness = weights.sum()
+
     population = Population(
         fitness_function=lambda x: system.fitness_function(x, weights),
         size=args.population_size,
@@ -151,7 +153,6 @@ def main():
         population=population,
         mutation_probability=args.mutation_probability,
         crossover_probability=args.crossover_probability,
-        stable=args.stable,
     )
 
     print("-------------------------------------------")
@@ -161,7 +162,6 @@ def main():
     # Print algorithm arguments
     print("Settings")
     print("-------------------------------------------")
-    print(f"Stable:          {args.stable}")
     print(f"Seed:            {args.seed if not args.no_seed else torch.seed()}")
     print(f"Generations:     {args.generations}")
     print("-------------------------------------------")
@@ -216,9 +216,14 @@ def main():
 
     for _ in (progress := tqdm(range(args.generations))):
         solver.evolve()
+
         progress.set_description(
             f"Best Fitness: {solver.history.best_fitness:.2f}",
         )
+
+        if args.early_stop and solver.history.best_fitness == maximum_fitness:
+            print("\nEarly stop triggered.")
+            break
     print("-------------------------------------------")
 
     # Print results
